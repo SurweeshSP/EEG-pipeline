@@ -37,8 +37,11 @@ class TestPreprocessing(unittest.TestCase):
 
     def test_artifact_detection(self):
         clean_sig = np.zeros(100)
-        noisy_sig = np.zeros(100)
-        noisy_sig[50] = 200 # > 150 threshold
+        
+        # Create a noisy signal with in-band frequency but high amplitude (200 uV, 10 Hz)
+        # This ensures it passes the bandpass filter and triggers the threshold
+        t = np.arange(0, 1.0, 1.0/self.fs)[:100]
+        noisy_sig = 200 * np.sin(2 * np.pi * 10 * t)
         
         _, is_clean = self.preprocessor.preprocess(clean_sig)
         self.assertTrue(is_clean)
